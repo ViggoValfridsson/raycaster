@@ -16,21 +16,36 @@
 #define WINDOW_HEIGHT RENDER_HEIGHT *WINDOW_SCALE
 #define WINDOW_WIDTH RENDER_WIDTH *WINDOW_SCALE
 
-// TODO: Move this to separate source file later
-// TODO actually check and return correct status
-status_code render_frame(SDL_Renderer *renderer, SDL_Texture *texture,
-                         uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]) {
-    SDL_UpdateTexture(texture, NULL, frame_buffer, RENDER_WIDTH * sizeof(uint32_t));
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
-    SDL_RenderPresent(renderer);
-
-    return STATUS_SUCCESS;
-}
-
 void log_sdl_error() {
     const char *error_message = SDL_GetError();
-    fprintf(stderr, "%s", error_message);
+    fprintf(stderr, "%s\n", error_message);
+}
+
+status_code render_frame(SDL_Renderer *renderer, SDL_Texture *texture,
+                         uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]) {
+    status_code return_value = STATUS_RENDER_ERROR;
+
+    if (SDL_UpdateTexture(texture, NULL, frame_buffer, RENDER_WIDTH * sizeof(uint32_t)) != 0) {
+        log_sdl_error();
+        goto exit;
+    }
+
+    if (SDL_RenderClear(renderer) != 0) {
+        log_sdl_error();
+        goto exit;
+    }
+
+    if (SDL_RenderCopy(renderer, texture, NULL, NULL) != 0) {
+        log_sdl_error();
+        goto exit;
+    }
+
+    SDL_RenderPresent(renderer);
+
+    return_value = STATUS_SUCCESS;
+
+exit:
+    return return_value;
 }
 
 // TODO: remove this temp method
@@ -89,19 +104,21 @@ int main(int argc, char *argv[]) {
         }
 
         temp_create_checkerboard(frame_buffer);
-        render_frame(renderer, texture, frame_buffer);
 
-        // TODO: lower this number
-        SDL_Delay(200);
+        return_value = render_frame(renderer, texture, frame_buffer);
+        if (return_value != STATUS_SUCCESS)
+            goto exit;
+
+        // INFO: Temp high number to make testing easier
+        SDL_Delay(300);
     }
 
+    return_value = STATUS_SUCCESS;
+
 exit:
-    if (texture)
-        SDL_DestroyTexture(texture);
-    if (renderer)
-        SDL_DestroyRenderer(renderer);
-    if (window)
-        SDL_DestroyWindow(window);
+    SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
 
     SDL_Quit();
 
