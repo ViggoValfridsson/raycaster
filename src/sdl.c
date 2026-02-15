@@ -1,7 +1,7 @@
 #include "common.h"
 #include <SDL2/SDL.h>
 
-void log_sdl_error() {
+static void log_sdl_error() {
     const char *error_message = SDL_GetError();
     fprintf(stderr, "%s\n", error_message);
 }
