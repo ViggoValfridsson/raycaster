@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#define MAP_HEIGHT 3
+#define MAP_HEIGHT 100
 #define MAP_WIDTH 100
 
 typedef struct {
