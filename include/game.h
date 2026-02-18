@@ -1,8 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#define MAP_HEIGHT 100
-#define MAP_WIDTH 100
+#define MAP_HEIGHT 24
+#define MAP_WIDTH 24
 
 typedef struct {
     float pos_x;
