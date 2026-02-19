@@ -9,6 +9,10 @@ typedef struct ray {
     bool is_hit;
 } ray;
 
+int half_brightness(int color) {
+    return color = (color & 0xFF000000) | (color & 0x00FEFEFE >> 1);
+}
+
 int get_wall_color(const game_state *state, int map_x, int map_y, bool is_side) {
     int color;
 
@@ -28,7 +32,7 @@ int get_wall_color(const game_state *state, int map_x, int map_y, bool is_side) 
     }
 
     if (is_side)
-        color /= 2;
+        color = half_brightness(color);
 
     return color;
 }
