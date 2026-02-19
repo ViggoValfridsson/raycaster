@@ -17,24 +17,16 @@ int main(void) {
     init_game(&state);
 
     uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH];
-    SDL_Event event;
-    int running = 1;
 
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
-                running = 0;
-            }
-        }
-
+    while (state.is_running) {
+        handle_events(&state);
         raycast(&state, frame_buffer);
 
         return_value = render_frame(renderer, texture, frame_buffer);
         if (return_value != STATUS_SUCCESS)
             goto exit;
 
-        // INFO: Temp high number to make testing easier
-        SDL_Delay(300);
+        SDL_Delay(16);
     }
 
     return_value = STATUS_SUCCESS;

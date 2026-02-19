@@ -1,7 +1,8 @@
 #include "game.h"
+#include <SDL2/SDL_events.h>
+#include <stdio.h>
 #include <string.h>
 
-// TODO: Make this cleaner lol
 static void init_map(game_state *state) {
     int tmp[MAP_WIDTH][MAP_HEIGHT] = {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                                       {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -32,6 +33,8 @@ static void init_map(game_state *state) {
 }
 
 void init_game(game_state *state) {
+    state->is_running = true;
+
     // Spawn middle
     state->pos_x = (float)MAP_WIDTH / 2;
     state->pos_y = (float)MAP_HEIGHT / 2;
@@ -45,4 +48,16 @@ void init_game(game_state *state) {
     state->plane_y = 0;
 
     init_map(state);
+}
+
+void handle_events(game_state *state) {
+    SDL_Event event;
+
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+            state->is_running = false;
+        }
+        printf("handling events");
+    }
+    printf("done handling");
 }
