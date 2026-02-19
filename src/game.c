@@ -57,7 +57,5 @@ void handle_events(game_state *state) {
         if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
             state->is_running = false;
         }
-        printf("handling events");
     }
-    printf("done handling");
 }
