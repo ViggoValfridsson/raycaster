@@ -8,13 +8,13 @@ typedef struct ray {
     bool is_hit;
 } ray;
 
-status_code raycast(const game_state *state, const uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]) {
+status_code raycast(const game_state *state, uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]) {
     status_code return_value = STATUS_RENDER_ERROR;
 
     for (int x = 0; x < RENDER_WIDTH; x++) {
         double camera_x = 2 * x / (double)RENDER_WIDTH - 1;
-        double ray_dir_y = state->dir_x + state->plane_x * camera_x;
-        double ray_dir_x = state->dir_y + state->plane_y * camera_x;
+        double ray_dir_x = state->dir_x + state->plane_x * camera_x;
+        double ray_dir_y = state->dir_y + state->plane_y * camera_x;
 
         // Current ray cell
         int map_x = (int)state->pos_x;
@@ -54,6 +54,8 @@ status_code raycast(const game_state *state, const uint32_t frame_buffer[RENDER_
         }
 
         while (!is_hit) {
+            // todo
+            break;
         }
     }
 
