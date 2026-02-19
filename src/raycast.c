@@ -12,7 +12,7 @@ typedef struct ray {
 int get_wall_color(const game_state *state, int map_x, int map_y, bool is_side) {
     int color;
 
-    switch (state->map[map_x][map_y]) {
+    switch (state->map[map_y][map_x]) {
     case 1:
         color = ARGB_RED;
         break;
@@ -97,7 +97,7 @@ void raycast(const game_state *state, uint32_t frame_buffer[RENDER_HEIGHT][RENDE
                 is_side = true;
             }
 
-            if (state->map[map_x][map_y])
+            if (state->map[map_y][map_x])
                 is_hit = true;
         }
 
