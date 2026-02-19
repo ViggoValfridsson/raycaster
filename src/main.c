@@ -27,9 +27,7 @@ int main(void) {
             }
         }
 
-        return_value = raycast(&state, frame_buffer);
-        if (return_value != STATUS_SUCCESS)
-            goto exit;
+        raycast(&state, frame_buffer);
 
         return_value = render_frame(renderer, texture, frame_buffer);
         if (return_value != STATUS_SUCCESS)
