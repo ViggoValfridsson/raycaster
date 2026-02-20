@@ -36,7 +36,18 @@ static int get_wall_color(const game_state *state, int map_x, int map_y, bool is
 void draw_vertical_slice(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], int render_x, int color, int draw_start,
                          int draw_end) {
     for (int y = 0; y < RENDER_HEIGHT; y++) {
-        int cell_color = y >= draw_start && y < draw_end ? color : ARGB_BLACK;
+        int cell_color;
+
+        if (y < draw_start) {
+            // Sky
+            cell_color = ARGB_SKY_BLUE;
+        } else if (y < draw_end) {
+            // Wall
+            cell_color = color;
+        }else {
+            // Floor
+            cell_color = ARGB_GRAY;
+        }
 
         frame_buffer[y][render_x] = cell_color;
     }

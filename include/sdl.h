@@ -9,6 +9,8 @@
 #define ARGB_GREEN 0xFF00FF00
 #define ARGB_BLUE 0xFF0000FF
 #define ARGB_YELLOW 0XFFFFFF00
+#define ARGB_GRAY 0XFF808080
+#define ARGB_SKY_BLUE 0XFF87CEFA
 #define ARGB_BLACK 0X00000000
 
 status_code render_frame(SDL_Renderer *renderer, SDL_Texture *texture,
