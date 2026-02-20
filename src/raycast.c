@@ -5,15 +5,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef struct ray {
-    bool is_hit;
-} ray;
-
-int half_brightness(int color) {
-    return color = (color & 0xFF000000) | (color & 0x00FEFEFE >> 1);
+static int half_brightness(int color) {
+    return (color & 0xFF000000) | ((color & 0x00FEFEFE) >> 1);
 }
 
-int get_wall_color(const game_state *state, int map_x, int map_y, bool is_side) {
+static int get_wall_color(const game_state *state, int map_x, int map_y, bool is_side) {
     int color;
 
     switch (state->map[map_y][map_x]) {
