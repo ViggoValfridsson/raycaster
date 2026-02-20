@@ -91,7 +91,6 @@ static game_event convert_event(SDL_Event *sdl_event) {
 }
 
 status_code sdl_get_events(game_event **events_out, int *events_len_out) {
-    // How best to dynamically alloc this to avoid possible overflow?
     int event_capacity = 16;
     int events_len = 0;
     status_code return_value = STATUS_SUCCESS;
