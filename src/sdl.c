@@ -37,8 +37,8 @@ exit:
     return return_value;
 }
 
-status_code sdl_create_context(const char *window_name, SDL_Window **window, SDL_Renderer **renderer,
-                               SDL_Texture **texture) {
+status_code sdl_create_context(const char *window_name, SDL_Window **window_out, SDL_Renderer **renderer_out,
+                               SDL_Texture **texture_out) {
     status_code return_value = STATUS_ERROR;
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -46,19 +46,19 @@ status_code sdl_create_context(const char *window_name, SDL_Window **window, SDL
         goto exit;
     }
 
-    if (!(*window = SDL_CreateWindow(window_name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH,
-                                     WINDOW_HEIGHT, SDL_WINDOW_SHOWN))) {
+    if (!(*window_out = SDL_CreateWindow(window_name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH,
+                                         WINDOW_HEIGHT, SDL_WINDOW_SHOWN))) {
         log_sdl_error();
         goto exit;
     }
 
-    if (!(*renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED))) {
+    if (!(*renderer_out = SDL_CreateRenderer(*window_out, -1, SDL_RENDERER_ACCELERATED))) {
         log_sdl_error();
         goto exit;
     }
 
-    if (!(*texture = SDL_CreateTexture(*renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, RENDER_WIDTH,
-                                       RENDER_HEIGHT))) {
+    if (!(*texture_out = SDL_CreateTexture(*renderer_out, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+                                           RENDER_WIDTH, RENDER_HEIGHT))) {
         log_sdl_error();
         goto exit;
     }
