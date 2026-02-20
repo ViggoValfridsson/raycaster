@@ -5,12 +5,14 @@
 #include <common.h>
 #include "game.h"
 
-#define ARGB_RED 0xFFFF0000
-#define ARGB_GREEN 0xFF00FF00
-#define ARGB_BLUE 0xFF0000FF
-#define ARGB_YELLOW 0XFFFFFF00
-#define ARGB_GRAY 0XFF808080
+#define ARGB_WALL_RED 0xFFFF0000
+#define ARGB_WALL_BLUE 0xFF0000FF
+#define ARGB_WALL_PURPLE 0xFFFF00FF
+#define ARGB_WALL_YELLOW 0XFFFFFF00
+
 #define ARGB_SKY_BLUE 0XFF87CEFA
+#define ARGB_GROUND_GREEN 0XFF3f9b0b 
+
 #define ARGB_BLACK 0X00000000
 
 status_code render_frame(SDL_Renderer *renderer, SDL_Texture *texture,

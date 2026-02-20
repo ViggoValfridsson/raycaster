@@ -14,16 +14,16 @@ static int get_wall_color(const game_state *state, int map_x, int map_y, bool is
 
     switch (state->map[map_y][map_x]) {
     case 1:
-        color = ARGB_RED;
+        color = ARGB_WALL_RED;
         break;
     case 2:
-        color = ARGB_GREEN;
+        color = ARGB_WALL_PURPLE;
         break;
     case 3:
-        color = ARGB_BLUE;
+        color = ARGB_WALL_BLUE;
         break;
     default:
-        color = ARGB_YELLOW;
+        color = ARGB_WALL_YELLOW;
         break;
     }
 
@@ -46,7 +46,7 @@ void draw_vertical_slice(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], int
             cell_color = color;
         }else {
             // Floor
-            cell_color = ARGB_GRAY;
+            cell_color = ARGB_GROUND_GREEN;
         }
 
         frame_buffer[y][render_x] = cell_color;
