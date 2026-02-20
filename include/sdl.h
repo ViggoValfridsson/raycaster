@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <common.h>
+#include "game.h"
 
 #define ARGB_RED 0xFFFF0000
 #define ARGB_GREEN 0xFF00FF00
@@ -14,5 +15,6 @@ status_code render_frame(SDL_Renderer *renderer, SDL_Texture *texture,
                          uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]);
 status_code sdl_create_context(char *window_name, SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **texture);
 void cleanup_sdl(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture);
+status_code sdl_get_events(game_event **events_out, int *events_len_out);
 
 #endif

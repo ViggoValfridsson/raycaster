@@ -1,7 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <SDL2/SDL_events.h>
 #include <stdbool.h>
 
 #define MAP_HEIGHT 24
@@ -18,7 +17,16 @@ typedef struct {
     int map[MAP_WIDTH][MAP_HEIGHT];
 } game_state;
 
+typedef enum {
+    EVENT_NONE,
+    EVENT_QUIT,
+    EVENT_MOVE_UP,
+    EVENT_MOVE_DOWN,
+    EVENT_MOVE_LEFT,
+    EVENT_MOVE_RIGHT 
+} game_event;
+
 void init_game(game_state *state);
-void handle_events(game_state *state);
+void handle_events(game_state *state, const game_event *events, int events_len);
 
 #endif

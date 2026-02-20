@@ -1,6 +1,4 @@
 #include "game.h"
-#include <SDL2/SDL_events.h>
-#include <stdio.h>
 #include <string.h>
 
 static void init_map(game_state *state) {
@@ -50,12 +48,23 @@ void init_game(game_state *state) {
     init_map(state);
 }
 
-void handle_events(game_state *state) {
-    SDL_Event event;
-
-    while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+void handle_events(game_state *state, const game_event *events, int events_len) {
+    for (int i = 0; i < events_len; i++) {
+        switch (events[i]) {
+        case EVENT_QUIT:
             state->is_running = false;
+            break;
+        case EVENT_MOVE_UP:
+            // TODO:
+        case EVENT_MOVE_DOWN:
+            // TODO:
+        case EVENT_MOVE_LEFT:
+            // TODO:
+        case EVENT_MOVE_RIGHT:
+            // TODO:
+        case EVENT_NONE:
+        default:
+            break;
         }
     }
 }

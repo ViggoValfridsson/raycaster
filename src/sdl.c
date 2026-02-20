@@ -1,5 +1,9 @@
 #include "common.h"
+#include "game.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 static void log_sdl_error() {
     const char *error_message = SDL_GetError();
@@ -33,7 +37,8 @@ exit:
     return return_value;
 }
 
-status_code sdl_create_context(const char *window_name, SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **texture) {
+status_code sdl_create_context(const char *window_name, SDL_Window **window, SDL_Renderer **renderer,
+                               SDL_Texture **texture) {
     status_code return_value = STATUS_ERROR;
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -61,6 +66,71 @@ status_code sdl_create_context(const char *window_name, SDL_Window **window, SDL
     return_value = STATUS_SUCCESS;
 
 exit:
+    return return_value;
+}
+
+static game_event convert_event(SDL_Event *sdl_event) {
+    if (sdl_event->type == SDL_QUIT) {
+        return EVENT_QUIT;
+    } else if (sdl_event->type == SDL_KEYDOWN) {
+        switch (sdl_event->key.keysym.sym) {
+        case SDLK_ESCAPE:
+            return EVENT_QUIT;
+        case SDLK_w:
+            return EVENT_MOVE_UP;
+        case SDLK_s:
+            return EVENT_MOVE_DOWN;
+        case SDLK_a:
+            return EVENT_MOVE_LEFT;
+        case SDLK_d:
+            return EVENT_MOVE_RIGHT;
+        }
+    }
+
+    return EVENT_NONE;
+}
+
+status_code sdl_get_events(game_event **events_out, int *events_len_out) {
+    // How best to dynamically alloc this to avoid possible overflow?
+    int event_capacity = 16;
+    int events_len = 0;
+    status_code return_value = STATUS_SUCCESS;
+
+    game_event *events = malloc(sizeof(game_event) * event_capacity);
+    if (!events) {
+        perror("malloc");
+        goto exit;
+    }
+
+    SDL_Event sdl_event;
+    while (SDL_PollEvent(&sdl_event)) {
+        game_event event = convert_event(&sdl_event);
+
+        if (event != EVENT_NONE) {
+            if (events_len >= event_capacity) {
+                event_capacity *= 2;
+
+                game_event *tmp = realloc(events, sizeof(game_event) * event_capacity);
+                if (!tmp) {
+                    perror("realloc");
+                    goto exit;
+                }
+
+                events = tmp;
+            }
+
+            events[(events_len++)] = event;
+        }
+    }
+
+    *events_out = events;
+    events = NULL;
+    *events_len_out = events_len;
+
+    return_value = STATUS_SUCCESS;
+
+exit:
+    free(events);
     return return_value;
 }
 
