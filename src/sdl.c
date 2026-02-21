@@ -69,25 +69,24 @@ exit:
     return return_value;
 }
 
-static game_event convert_event(SDL_Event *sdl_event) {
-    if (sdl_event->type == SDL_QUIT) {
-        return EVENT_QUIT;
-    } else if (sdl_event->type == SDL_KEYDOWN) {
-        switch (sdl_event->key.keysym.sym) {
-        case SDLK_ESCAPE:
-            return EVENT_QUIT;
-        case SDLK_w:
-            return EVENT_MOVE_UP;
-        case SDLK_s:
-            return EVENT_MOVE_DOWN;
-        case SDLK_a:
-            return EVENT_MOVE_LEFT;
-        case SDLK_d:
-            return EVENT_MOVE_RIGHT;
+static status_code add_event(game_event **game_events_out, int *events_len, int *event_capacity, game_event event) {
+    if (event != EVENT_NONE) {
+        if (*events_len >= *event_capacity) {
+            *event_capacity *= 2;
+
+            game_event *tmp = realloc(*game_events_out, sizeof(game_event) * *event_capacity);
+            if (!tmp) {
+                perror("realloc");
+                return STATUS_ERROR;
+            }
+
+            *game_events_out = tmp;
         }
+
+        (*game_events_out)[((*events_len)++)] = event;
     }
 
-    return EVENT_NONE;
+    return STATUS_SUCCESS;
 }
 
 status_code sdl_get_events(game_event **events_out, int *events_len_out) {
@@ -103,29 +102,24 @@ status_code sdl_get_events(game_event **events_out, int *events_len_out) {
 
     SDL_Event sdl_event;
     while (SDL_PollEvent(&sdl_event)) {
-        game_event event = convert_event(&sdl_event);
-
-        if (event != EVENT_NONE) {
-            if (events_len >= event_capacity) {
-                event_capacity *= 2;
-
-                game_event *tmp = realloc(events, sizeof(game_event) * event_capacity);
-                if (!tmp) {
-                    perror("realloc");
-                    goto exit;
-                }
-
-                events = tmp;
-            }
-
-            events[(events_len++)] = event;
+        if (sdl_event.type == SDL_QUIT || (sdl_event.type == SDL_KEYDOWN && sdl_event.key.keysym.sym == SDLK_ESCAPE)) {
+            add_event(&events, &events_len, &event_capacity, EVENT_QUIT);
         }
     }
+
+    const Uint8 *keys = SDL_GetKeyboardState(NULL);
+    if (keys[SDL_SCANCODE_W])
+        add_event(&events, &events_len, &event_capacity, EVENT_MOVE_UP);
+    if (keys[SDL_SCANCODE_S])
+        add_event(&events, &events_len, &event_capacity, EVENT_MOVE_DOWN);
+    if (keys[SDL_SCANCODE_A])
+        add_event(&events, &events_len, &event_capacity, EVENT_MOVE_LEFT);
+    if (keys[SDL_SCANCODE_D])
+        add_event(&events, &events_len, &event_capacity, EVENT_MOVE_RIGHT);
 
     *events_out = events;
     events = NULL;
     *events_len_out = events_len;
-
     return_value = STATUS_SUCCESS;
 
 exit:

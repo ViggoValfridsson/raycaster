@@ -2,7 +2,8 @@
 #include <math.h>
 #include <string.h>
 
-#define ROT_SPEED 0.1f
+#define ROT_SPEED 0.03f
+#define MOV_SPEED 0.15f
 
 typedef enum { RIGHT, LEFT } direction;
 
@@ -53,11 +54,11 @@ void init_game(game_state *state) {
     init_map(state);
 }
 
-void move_unless_collission(game_state *state, float move_dir_y, float move_dir_x) {
+void move(game_state *state, float move_dir_y, float move_dir_x) {
     const float margin = 0.3f;
 
-    float desired_pos_y = state->pos_y + move_dir_y;
-    float desired_pos_x = state->pos_x + move_dir_x;
+    float desired_pos_y = state->pos_y + move_dir_y * MOV_SPEED;
+    float desired_pos_x = state->pos_x + move_dir_x * MOV_SPEED;
 
     if (!state->map[(int)(desired_pos_y + margin)][(int)state->pos_x] &&
         !state->map[(int)(desired_pos_y - margin)][(int)state->pos_x]) {
@@ -100,10 +101,10 @@ void handle_events(game_state *state, const game_event *events, int events_len) 
             state->is_running = false;
             break;
         case EVENT_MOVE_UP:
-            move_unless_collission(state, state->dir_y, state->dir_x);
+            move(state, state->dir_y, state->dir_x);
             break;
         case EVENT_MOVE_DOWN:
-            move_unless_collission(state, -state->dir_y, -state->dir_x);
+            move(state, -state->dir_y, -state->dir_x);
             break;
         case EVENT_MOVE_RIGHT:
             turn(state, RIGHT);
