@@ -89,6 +89,27 @@ static status_code add_event(game_event **game_events_out, int *events_len, int 
     return STATUS_SUCCESS;
 }
 
+static status_code add_held_key_events(game_event **game_events_out, int *events_len, int *event_capacity,
+                                       const Uint8 *keys) {
+    if (keys[SDL_SCANCODE_W] &&
+        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_UP)) != STATUS_SUCCESS)
+        return STATUS_ERROR;
+
+    if (keys[SDL_SCANCODE_S] &&
+        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_DOWN)) != STATUS_SUCCESS)
+        return STATUS_ERROR;
+
+    if (keys[SDL_SCANCODE_D] &&
+        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_RIGHT)) != STATUS_SUCCESS)
+        return STATUS_ERROR;
+
+    if (keys[SDL_SCANCODE_A] &&
+        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_LEFT)) != STATUS_SUCCESS)
+        return STATUS_ERROR;
+
+    return STATUS_SUCCESS;
+}
+
 status_code sdl_get_events(game_event **events_out, int *events_len_out) {
     int event_capacity = 16;
     int events_len = 0;
@@ -102,20 +123,17 @@ status_code sdl_get_events(game_event **events_out, int *events_len_out) {
 
     SDL_Event sdl_event;
     while (SDL_PollEvent(&sdl_event)) {
-        if (sdl_event.type == SDL_QUIT || (sdl_event.type == SDL_KEYDOWN && sdl_event.key.keysym.sym == SDLK_ESCAPE)) {
-            add_event(&events, &events_len, &event_capacity, EVENT_QUIT);
+        if (sdl_event.type != SDL_QUIT && !(sdl_event.type == SDL_KEYDOWN && sdl_event.key.keysym.sym == SDLK_ESCAPE)) {
+            continue;
         }
+
+        if ((return_value = add_event(&events, &events_len, &event_capacity, EVENT_QUIT)) != STATUS_SUCCESS)
+            goto exit;
     }
 
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
-    if (keys[SDL_SCANCODE_W])
-        add_event(&events, &events_len, &event_capacity, EVENT_MOVE_UP);
-    if (keys[SDL_SCANCODE_S])
-        add_event(&events, &events_len, &event_capacity, EVENT_MOVE_DOWN);
-    if (keys[SDL_SCANCODE_A])
-        add_event(&events, &events_len, &event_capacity, EVENT_MOVE_LEFT);
-    if (keys[SDL_SCANCODE_D])
-        add_event(&events, &events_len, &event_capacity, EVENT_MOVE_RIGHT);
+    if ((return_value = add_held_key_events(&events, &events_len, &event_capacity, keys)) != STATUS_SUCCESS)
+        goto exit;
 
     *events_out = events;
     events = NULL;
