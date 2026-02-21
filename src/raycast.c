@@ -44,7 +44,7 @@ void draw_vertical_slice(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], int
         } else if (y <= draw_end) {
             // Wall
             cell_color = color;
-        }else {
+        } else {
             // Floor
             cell_color = ARGB_GROUND_GREEN;
         }

@@ -14,7 +14,8 @@ typedef struct {
     float dir_y;
     float plane_x;
     float plane_y;
-    int map[MAP_WIDTH][MAP_HEIGHT];
+    // Inverted y and x to make array initialization clearer
+    int map[MAP_HEIGHT][MAP_WIDTH];
 } game_state;
 
 typedef enum {

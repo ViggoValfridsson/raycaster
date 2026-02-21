@@ -2,7 +2,7 @@
 #include <string.h>
 
 static void init_map(game_state *state) {
-    int tmp[MAP_WIDTH][MAP_HEIGHT] = {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    int tmp[MAP_HEIGHT][MAP_WIDTH] = {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                                       {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                                       {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
                                       {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -48,6 +48,16 @@ void init_game(game_state *state) {
     init_map(state);
 }
 
+void move_unless_collission(game_state *state, int move_dir_x, int move_dir_y) {
+    if (!state->map[(int)state->pos_y][(int)state->pos_x + move_dir_x]) {
+        state->pos_x += move_dir_x;
+    }
+
+    if (!state->map[(int)state->pos_y + move_dir_y][(int)state->pos_x]) {
+        state->pos_y += move_dir_y;
+    }
+}
+
 void handle_events(game_state *state, const game_event *events, int events_len) {
     for (int i = 0; i < events_len; i++) {
         switch (events[i]) {
@@ -55,9 +65,13 @@ void handle_events(game_state *state, const game_event *events, int events_len) 
             state->is_running = false;
             break;
         case EVENT_MOVE_UP:
-            // TODO:
+            state->pos_x += state->dir_x;
+            state->pos_y += state->dir_y;
+            break;
         case EVENT_MOVE_DOWN:
-            // TODO:
+            state->pos_x -= state->dir_x;
+            state->pos_y -= state->dir_y;
+            break;
         case EVENT_MOVE_LEFT:
             // TODO:
         case EVENT_MOVE_RIGHT:
