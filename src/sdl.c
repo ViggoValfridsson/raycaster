@@ -92,19 +92,19 @@ static status_code add_event(game_event **game_events_out, int *events_len, int 
 static status_code add_held_key_events(game_event **game_events_out, int *events_len, int *event_capacity,
                                        const Uint8 *keys) {
     if (keys[SDL_SCANCODE_W] &&
-        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_UP)) != STATUS_SUCCESS)
+        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_UP) != STATUS_SUCCESS))
         return STATUS_ERROR;
 
     if (keys[SDL_SCANCODE_S] &&
-        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_DOWN)) != STATUS_SUCCESS)
+        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_DOWN) != STATUS_SUCCESS))
         return STATUS_ERROR;
 
     if (keys[SDL_SCANCODE_D] &&
-        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_RIGHT)) != STATUS_SUCCESS)
+        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_RIGHT) != STATUS_SUCCESS))
         return STATUS_ERROR;
 
     if (keys[SDL_SCANCODE_A] &&
-        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_LEFT)) != STATUS_SUCCESS)
+        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_LEFT) != STATUS_SUCCESS))
         return STATUS_ERROR;
 
     return STATUS_SUCCESS;
