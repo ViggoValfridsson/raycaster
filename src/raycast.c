@@ -41,7 +41,7 @@ void draw_vertical_slice(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], int
         if (y < draw_start) {
             // Sky
             cell_color = ARGB_SKY_BLUE;
-        } else if (y < draw_end) {
+        } else if (y <= draw_end) {
             // Wall
             cell_color = color;
         }else {
