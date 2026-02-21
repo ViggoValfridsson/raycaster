@@ -2,6 +2,9 @@
 #include "game.h"
 #include "raycast.h"
 #include "sdl.h"
+#include <SDL2/SDL_timer.h>
+
+#define FRAME_LENGTH_MS 16
 
 int main(void) {
     SDL_Window *window = NULL;
@@ -20,8 +23,9 @@ int main(void) {
     uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH];
 
     while (state.is_running) {
+        uint64_t start_ticks = SDL_GetTicks64();
         int events_len;
-        return_value= sdl_get_events(&game_events, &events_len);
+        return_value = sdl_get_events(&game_events, &events_len);
         if (return_value != STATUS_SUCCESS)
             goto exit;
 
@@ -35,7 +39,8 @@ int main(void) {
         free(game_events);
         game_events = NULL;
 
-        SDL_Delay(16);
+        uint64_t render_time_ms = SDL_GetTicks64() - start_ticks;
+        SDL_Delay(render_time_ms < FRAME_LENGTH_MS ? FRAME_LENGTH_MS - render_time_ms : 0);
     }
 
     return_value = STATUS_SUCCESS;
