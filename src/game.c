@@ -2,8 +2,8 @@
 #include <math.h>
 #include <string.h>
 
-#define ROT_SPEED 0.03f
-#define MOV_SPEED 0.15f
+#define ROT_SPEED 0.04f
+#define MOV_SPEED 0.12f
 
 typedef enum { RIGHT, LEFT } direction;
 
@@ -36,42 +36,49 @@ static void init_map(game_state *state) {
     memcpy(state->map, tmp, sizeof(tmp));
 }
 
+static weapon create_shotgun() {
+    weapon shotgun = {.damage = 10, .range = 10, .name = "Shotgun"};
+    return shotgun;
+}
+
 void init_game(game_state *state) {
     state->is_running = true;
 
     // Spawn middle
-    state->pos_x = (float)MAP_WIDTH / 2;
-    state->pos_y = (float)MAP_HEIGHT / 2;
+    state->player.pos_x = (float)MAP_WIDTH / 2;
+    state->player.pos_y = (float)MAP_HEIGHT / 2;
 
     // looking north
-    state->dir_x = 0;
-    state->dir_y = -1;
+    state->player.dir_x = 0;
+    state->player.dir_y = -1;
 
     // 66 fov
-    state->plane_x = 0.66f;
-    state->plane_y = 0;
+    state->player.plane_x = 0.66f;
+    state->player.plane_y = 0;
+
+    state->weapon = create_shotgun();
 
     init_map(state);
 }
 
-void move(game_state *state, float move_dir_y, float move_dir_x) {
+static void move(game_state *state, float move_dir_y, float move_dir_x) {
     const float margin = 0.3f;
 
-    float desired_pos_y = state->pos_y + move_dir_y * MOV_SPEED;
-    float desired_pos_x = state->pos_x + move_dir_x * MOV_SPEED;
+    float desired_pos_y = state->player.pos_y + move_dir_y * MOV_SPEED;
+    float desired_pos_x = state->player.pos_x + move_dir_x * MOV_SPEED;
 
-    if (!state->map[(int)(desired_pos_y + margin)][(int)state->pos_x] &&
-        !state->map[(int)(desired_pos_y - margin)][(int)state->pos_x]) {
-        state->pos_y = desired_pos_y;
+    if (!state->map[(int)(desired_pos_y + margin)][(int)state->player.pos_x] &&
+        !state->map[(int)(desired_pos_y - margin)][(int)state->player.pos_x]) {
+        state->player.pos_y = desired_pos_y;
     }
 
-    if (!state->map[(int)state->pos_y][(int)(desired_pos_x + margin)] &&
-        !state->map[(int)state->pos_y][(int)(desired_pos_x - margin)]) {
-        state->pos_x = desired_pos_x;
+    if (!state->map[(int)state->player.pos_y][(int)(desired_pos_x + margin)] &&
+        !state->map[(int)state->player.pos_y][(int)(desired_pos_x - margin)]) {
+        state->player.pos_x = desired_pos_x;
     }
 }
 
-void turn(game_state *state, direction direction) {
+static void turn(game_state *state, direction direction) {
     float rot_speed;
 
     switch (direction) {
@@ -85,13 +92,13 @@ void turn(game_state *state, direction direction) {
         rot_speed = ROT_SPEED;
     }
 
-    double old_dir_x = state->dir_x;
-    state->dir_x = state->dir_x * cos(rot_speed) - state->dir_y * sin(rot_speed);
-    state->dir_y = old_dir_x * sin(rot_speed) + state->dir_y * cos(rot_speed);
+    double old_dir_x = state->player.dir_x;
+    state->player.dir_x = state->player.dir_x * cos(rot_speed) - state->player.dir_y * sin(rot_speed);
+    state->player.dir_y = old_dir_x * sin(rot_speed) + state->player.dir_y * cos(rot_speed);
 
-    double old_plane_x = state->plane_x;
-    state->plane_x = state->plane_x * cos(rot_speed) - state->plane_y * sin(rot_speed);
-    state->plane_y = old_plane_x * sin(rot_speed) + state->plane_y * cos(rot_speed);
+    double old_plane_x = state->player.plane_x;
+    state->player.plane_x = state->player.plane_x * cos(rot_speed) - state->player.plane_y * sin(rot_speed);
+    state->player.plane_y = old_plane_x * sin(rot_speed) + state->player.plane_y * cos(rot_speed);
 }
 
 void handle_events(game_state *state, const game_event *events, int events_len) {
@@ -101,10 +108,10 @@ void handle_events(game_state *state, const game_event *events, int events_len) 
             state->is_running = false;
             break;
         case EVENT_MOVE_UP:
-            move(state, state->dir_y, state->dir_x);
+            move(state, state->player.dir_y, state->player.dir_x);
             break;
         case EVENT_MOVE_DOWN:
-            move(state, -state->dir_y, -state->dir_x);
+            move(state, -state->player.dir_y, -state->player.dir_x);
             break;
         case EVENT_MOVE_RIGHT:
             turn(state, RIGHT);
@@ -118,3 +125,4 @@ void handle_events(game_state *state, const game_event *events, int events_len) 
         }
     }
 }
+

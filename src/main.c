@@ -30,7 +30,7 @@ int main(void) {
             goto exit;
 
         handle_events(&state, game_events, events_len);
-        raycast(&state, frame_buffer);
+        raycast(&state.player, state.map, frame_buffer);
 
         return_value = render_frame(renderer, texture, frame_buffer);
         if (return_value != STATUS_SUCCESS)

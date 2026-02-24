@@ -9,10 +9,10 @@ static int half_brightness(int color) {
     return (color & 0xFF000000) | ((color & 0x00FEFEFE) >> 1);
 }
 
-static int get_wall_color(const game_state *state, int map_x, int map_y, bool is_side) {
+static int get_wall_color(int map[MAP_HEIGHT][MAP_WIDTH], int map_x, int map_y, bool is_side) {
     int color;
 
-    switch (state->map[map_y][map_x]) {
+    switch (map[map_y][map_x]) {
     case 1:
         color = ARGB_WALL_RED;
         break;
@@ -33,8 +33,8 @@ static int get_wall_color(const game_state *state, int map_x, int map_y, bool is
     return color;
 }
 
-void draw_vertical_slice(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], int render_x, int color, int draw_start,
-                         int draw_end) {
+static void draw_vertical_slice(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], int render_x, int color,
+                                int draw_start, int draw_end) {
     for (int y = 0; y < RENDER_HEIGHT; y++) {
         int cell_color;
 
@@ -53,15 +53,15 @@ void draw_vertical_slice(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], int
     }
 }
 
-void raycast(const game_state *state, uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]) {
+void raycast(const player *player, int map[MAP_HEIGHT][MAP_WIDTH], uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]) {
     for (int x = 0; x < RENDER_WIDTH; x++) {
         double camera_x = 2 * x / (double)RENDER_WIDTH - 1;
-        double ray_dir_x = state->dir_x + state->plane_x * camera_x;
-        double ray_dir_y = state->dir_y + state->plane_y * camera_x;
+        double ray_dir_x = player->dir_x + player->plane_x * camera_x;
+        double ray_dir_y = player->dir_y + player->plane_y * camera_x;
 
         // Current ray cell
-        int map_x = (int)state->pos_x;
-        int map_y = (int)state->pos_y;
+        int map_x = (int)player->pos_x;
+        int map_y = (int)player->pos_y;
 
         // length of ray from current position to next side
         double side_dist_x;
@@ -83,18 +83,18 @@ void raycast(const game_state *state, uint32_t frame_buffer[RENDER_HEIGHT][RENDE
 
         if (ray_dir_x < 0) {
             step_x = -1;
-            side_dist_x = (state->pos_x - map_x) * delta_dist_x;
+            side_dist_x = (player->pos_x - map_x) * delta_dist_x;
         } else {
             step_x = 1;
-            side_dist_x = (map_x + 1 - state->pos_x) * delta_dist_x;
+            side_dist_x = (map_x + 1 - player->pos_x) * delta_dist_x;
         }
 
         if (ray_dir_y < 0) {
             step_y = -1;
-            side_dist_y = (state->pos_y - map_y) * delta_dist_y;
+            side_dist_y = (player->pos_y - map_y) * delta_dist_y;
         } else {
             step_y = 1;
-            side_dist_y = (map_y + 1 - state->pos_y) * delta_dist_y;
+            side_dist_y = (map_y + 1 - player->pos_y) * delta_dist_y;
         }
 
         while (!is_hit) {
@@ -108,7 +108,7 @@ void raycast(const game_state *state, uint32_t frame_buffer[RENDER_HEIGHT][RENDE
                 is_side = true;
             }
 
-            if (state->map[map_y][map_x])
+            if (map[map_y][map_x])
                 is_hit = true;
         }
 
@@ -127,7 +127,7 @@ void raycast(const game_state *state, uint32_t frame_buffer[RENDER_HEIGHT][RENDE
         if (draw_end >= RENDER_HEIGHT)
             draw_end = RENDER_HEIGHT - 1;
 
-        int color = get_wall_color(state, map_x, map_y, is_side);
+        int color = get_wall_color(map, map_x, map_y, is_side);
         draw_vertical_slice(frame_buffer, x, color, draw_start, draw_end);
     }
 }
