@@ -5,6 +5,6 @@
 #include "game.h"
 #include <stdint.h>
 
-void overlay_hud(const player *player, uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]);
+status_code overlay_hud(const player *player, uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]);
 
 #endif

@@ -43,6 +43,5 @@ typedef enum {
 
 void init_game(game_state *state);
 void handle_events(game_state *state, const game_event *events, int events_len);
-void overlay_hud(const player *player, uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH]);
 
 #endif
