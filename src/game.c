@@ -37,8 +37,8 @@ static void init_map(game_state *state) {
 }
 
 static weapon create_shotgun() {
-    weapon shotgun = {.damage = 10, .range = 10, .name = "Shotgun"};
-    return shotgun;
+    weapon gun = {.damage = 10, .range = 10, .type = shotgun, .x_margin = 50};
+    return gun;
 }
 
 void init_game(game_state *state) {
@@ -56,7 +56,7 @@ void init_game(game_state *state) {
     state->player.plane_x = 0.66f;
     state->player.plane_y = 0;
 
-    state->weapon = create_shotgun();
+    state->player.weapon = create_shotgun();
 
     init_map(state);
 }
@@ -125,4 +125,3 @@ void handle_events(game_state *state, const game_event *events, int events_len) 
         }
     }
 }
-

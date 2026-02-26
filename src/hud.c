@@ -1,13 +1,13 @@
 #include "hud.h"
 #include "assets.h"
 #include "common.h"
+#include "game.h"
 #include <stdint.h>
 #include <stdlib.h>
 
-static status_code overlay_weapon(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], sprite *sprite) {
+static status_code overlay_weapon(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], sprite *sprite, const weapon*weapon) {
     int weapon_offset_y = RENDER_HEIGHT - sprite->height;
-    // 100 is a magical number making sure weapon isn't all the way to the left of the screen
-    int weapon_offset_x = RENDER_WIDTH - sprite->width - 100;
+    int weapon_offset_x = RENDER_WIDTH - sprite->width - weapon->x_margin;
 
     for (int y = 0; y < sprite->height; y++) {
         for (int x = 0; x < sprite->width; x++) {
@@ -15,7 +15,7 @@ static status_code overlay_weapon(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WI
             int frame_x = x + weapon_offset_x;
             int weapon_pixel = sprite->pixels[y * sprite->width + x];
 
-            // TODO: Properly handle alpha layers that are semi transparent and draw the proper color
+            // This doesn't respect semi transparency. Since we never use semi transparency this is a feature not a bug
             if (!(weapon_pixel & 0xFF000000))
                 continue;
 
@@ -33,11 +33,11 @@ status_code overlay_hud(const player *player, uint32_t frame_buffer[RENDER_HEIGH
     // TODO: Make this file path not depend on executable being located inside repository.
     // TODO: Check weapon type and load different asset
     // TODO: Handle path being working directory dependent
-    return_value = load_sprite("./assets/shotgun-placeholder.png", &sprite);
+    return_value = get_weapon_sprite(player->weapon.type, &sprite);
     if (return_value != STATUS_SUCCESS)
         goto exit;
 
-    return_value = overlay_weapon(frame_buffer, sprite);
+    return_value = overlay_weapon(frame_buffer, sprite, &player->weapon);
     if (return_value != STATUS_SUCCESS)
         goto exit;
 
