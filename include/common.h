@@ -1,6 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <stdint.h>
 #define RENDER_WIDTH 640
 #define RENDER_HEIGHT 480
 #define RENDER_SIZE RENDER_WIDTH *RENDER_HEIGHT
@@ -13,5 +14,11 @@ typedef enum {
     STATUS_ERROR = -1,
     STATUS_RENDER_ERROR = -2,
 } status_code;
+
+typedef struct {
+    int width;
+    int height;
+    uint32_t *pixels;
+} sprite;
 
 #endif

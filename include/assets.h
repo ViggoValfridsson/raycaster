@@ -4,8 +4,8 @@
 #include "common.h"
 #include <stdint.h>
 
-void free_image_buffer(uint32_t **image_buffer, int height);
+void free_sprite(sprite *sprite);
 // Need to free returned image buffer using free_image_buffer method
-status_code load_image(const char *file_name, uint32_t ***image_argb_buffer_out, int *width_out, int *height_out);
+status_code load_sprite(const char *file_name, sprite **sprite_out);
 
 #endif
