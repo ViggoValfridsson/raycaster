@@ -56,7 +56,20 @@ void destroy_assets() {
     weapon_cache_len = 0;
 }
 
-// TODO: extract RGBA conversion to separate function
+static void sprite_fill_argb(sprite *target, const unsigned char *rgba_data) {
+    for (int y = 0; y < target->height; y++) {
+        for (int x = 0; x < target->width; x++) {
+            int index = y * target->width + x;
+            int i = index * 4; // 4 bytes per pixel RGBA
+            unsigned char r = rgba_data[i];
+            unsigned char g = rgba_data[i + 1];
+            unsigned char b = rgba_data[i + 2];
+            unsigned char a = rgba_data[i + 3];
+            target->pixels[index] = (a << 24) | (r << 16) | (g << 8) | b;
+        }
+    }
+}
+
 // TODO: Fix sprite loading being dependent on where game is run from
 static status_code load_sprite(const char *file_name, sprite **sprite_out) {
     unsigned char *data = NULL;
@@ -83,17 +96,7 @@ static status_code load_sprite(const char *file_name, sprite **sprite_out) {
         goto exit;
     }
 
-    for (int y = 0; y < image->height; y++) {
-        for (int x = 0; x < image->width; x++) {
-            int index = y * image->width + x;
-            int i = index * 4; // 4 bytes per pixel (RGBA)
-            unsigned char r = data[i];
-            unsigned char g = data[i + 1];
-            unsigned char b = data[i + 2];
-            unsigned char a = data[i + 3];
-            image->pixels[index] = (a << 24) | (r << 16) | (g << 8) | b; // ARGB format
-        }
-    }
+    sprite_fill_argb(image, data);
 
     *sprite_out = image;
     image = NULL;
