@@ -30,9 +30,6 @@ status_code overlay_hud(const player *player, uint32_t frame_buffer[RENDER_HEIGH
     sprite *sprite = NULL;
     status_code return_value = STATUS_ERROR;
 
-    // TODO: Make this file path not depend on executable being located inside repository.
-    // TODO: Check weapon type and load different asset
-    // TODO: Handle path being working directory dependent
     return_value = get_weapon_sprite(player->weapon.type, &sprite);
     if (return_value != STATUS_SUCCESS)
         goto exit;
@@ -44,6 +41,5 @@ status_code overlay_hud(const player *player, uint32_t frame_buffer[RENDER_HEIGH
     return_value = STATUS_SUCCESS;
 
 exit:
-    free_sprite(sprite);
     return return_value;
 }

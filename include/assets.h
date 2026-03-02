@@ -5,8 +5,12 @@
 #include "game.h"
 #include <stdint.h>
 
-void free_sprite(sprite *sprite);
-// Need to free returned image buffer using free_image_buffer method
+void destroy_assets();
+// After calling init assets you must call destroy assets to free memory. Do not call this function multiple times
+// without destroying assets inbetween  as that will leak memory.
+status_code init_assets();
+// Do not call this before init_assets
+// Never free sprite with call to libc free()
 status_code get_weapon_sprite(weapon_type type, sprite **sprite_out);
 
 #endif

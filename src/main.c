@@ -1,3 +1,4 @@
+#include "assets.h"
 #include "common.h"
 #include "game.h"
 #include "hud.h"
@@ -20,6 +21,8 @@ int main(void) {
 
     game_state state;
     init_game(&state);
+
+    init_assets();
 
     uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH];
 
@@ -52,6 +55,7 @@ int main(void) {
 exit:
     free(game_events);
     cleanup_sdl(window, renderer, texture);
+    destroy_assets();
 
     return return_value;
 }
