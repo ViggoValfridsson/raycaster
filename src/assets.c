@@ -156,6 +156,6 @@ status_code get_weapon_sprite(weapon_type type, sprite **sprite_out) {
         }
     }
 
-    fprintf(stderr, "Weapon type did not exist in cache memory\n");
+    fprintf(stderr, "Weapon type \"%d\" did not exist in cache. Have you called init_assets?\n", type);
     return STATUS_ERROR;
 }
