@@ -5,11 +5,15 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-static status_code overlay_weapon(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], sprite *sprite, const weapon*weapon) {
-    int weapon_offset_y = RENDER_HEIGHT - sprite->height;
-    int weapon_offset_x = RENDER_WIDTH - sprite->width - weapon->x_margin;
+static status_code overlay_weapon(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], const sprite *sprite,
+                                  const player *player) {
+    const int bob_factor = 2;
 
-    for (int y = 0; y < sprite->height; y++) {
+    int bob_offset_y = player->bob_phase * bob_factor;
+    int weapon_offset_y = RENDER_HEIGHT - sprite->height + bob_offset_y;
+    int weapon_offset_x = RENDER_WIDTH - sprite->width - player->weapon.x_margin;
+
+    for (int y = 0; y < sprite->height - bob_offset_y; y++) {
         for (int x = 0; x < sprite->width; x++) {
             int frame_y = y + weapon_offset_y;
             int frame_x = x + weapon_offset_x;
@@ -34,7 +38,7 @@ status_code overlay_hud(const player *player, uint32_t frame_buffer[RENDER_HEIGH
     if (return_value != STATUS_SUCCESS)
         goto exit;
 
-    return_value = overlay_weapon(frame_buffer, sprite, &player->weapon);
+    return_value = overlay_weapon(frame_buffer, sprite, player);
     if (return_value != STATUS_SUCCESS)
         goto exit;
 

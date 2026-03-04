@@ -100,11 +100,11 @@ static status_code add_held_key_events(game_event **game_events_out, int *events
         return STATUS_ERROR;
 
     if (keys[SDL_SCANCODE_D] &&
-        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_RIGHT) != STATUS_SUCCESS))
+        (add_event(game_events_out, events_len, event_capacity, EVENT_TURN_RIGHT) != STATUS_SUCCESS))
         return STATUS_ERROR;
 
     if (keys[SDL_SCANCODE_A] &&
-        (add_event(game_events_out, events_len, event_capacity, EVENT_MOVE_LEFT) != STATUS_SUCCESS))
+        (add_event(game_events_out, events_len, event_capacity, EVENT_TURN_LEFT) != STATUS_SUCCESS))
         return STATUS_ERROR;
 
     return STATUS_SUCCESS;

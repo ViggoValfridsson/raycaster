@@ -1,5 +1,7 @@
 #include "game.h"
+#include <SDL2/SDL_pixels.h>
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
 
 #define ROT_SPEED 0.04f
@@ -56,9 +58,31 @@ void init_game(game_state *state) {
     state->player.plane_x = 0.66f;
     state->player.plane_y = 0;
 
+    state->player.bob_phase = 0;
+    state->player.is_bob_incrementing = true;
+
     state->player.weapon = create_shotgun();
 
     init_map(state);
+}
+
+static void bob_weapon(player *player, bool is_moving) {
+    const int max_bob_phase = 15;
+
+    if (!is_moving) {
+        if (player->bob_phase > 0) {
+            player->bob_phase--;
+        } else {
+            player->is_bob_incrementing = true;
+        }
+
+        return;
+    }
+
+    player->bob_phase += player->is_bob_incrementing ? 1 : -1;
+
+    if (player->bob_phase >= max_bob_phase || player->bob_phase <= 0)
+        player->is_bob_incrementing = !player->is_bob_incrementing;
 }
 
 static void move(game_state *state, float move_dir_y, float move_dir_x) {
@@ -102,21 +126,25 @@ static void turn(game_state *state, direction direction) {
 }
 
 void handle_events(game_state *state, const game_event *events, int events_len) {
+    bool is_moving = false;
+
     for (int i = 0; i < events_len; i++) {
         switch (events[i]) {
         case EVENT_QUIT:
             state->is_running = false;
             break;
         case EVENT_MOVE_UP:
+            is_moving = true;
             move(state, state->player.dir_y, state->player.dir_x);
             break;
         case EVENT_MOVE_DOWN:
+            is_moving = true;
             move(state, -state->player.dir_y, -state->player.dir_x);
             break;
-        case EVENT_MOVE_RIGHT:
+        case EVENT_TURN_RIGHT:
             turn(state, RIGHT);
             break;
-        case EVENT_MOVE_LEFT:
+        case EVENT_TURN_LEFT:
             turn(state, LEFT);
             break;
         case EVENT_NONE:
@@ -124,4 +152,8 @@ void handle_events(game_state *state, const game_event *events, int events_len) 
             break;
         }
     }
+
+    bob_weapon(&state->player, is_moving);
+
+    printf("%d\n", state->player.bob_phase);
 }

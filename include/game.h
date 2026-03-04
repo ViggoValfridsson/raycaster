@@ -7,11 +7,9 @@
 #define MAP_HEIGHT 24
 #define MAP_WIDTH 24
 
-typedef enum {
-    shotgun
-} weapon_type;
+typedef enum { shotgun } weapon_type;
 
-typedef struct{
+typedef struct {
     int damage;
     int range;
     // Offset indicating how far from right side of screen weapon should appear
@@ -20,6 +18,8 @@ typedef struct{
 } weapon;
 
 typedef struct {
+    bool is_bob_incrementing;
+    short bob_phase;
     short health;
     float pos_x;
     float pos_y;
@@ -37,14 +37,7 @@ typedef struct {
     int map[MAP_HEIGHT][MAP_WIDTH];
 } game_state;
 
-typedef enum {
-    EVENT_NONE,
-    EVENT_QUIT,
-    EVENT_MOVE_UP,
-    EVENT_MOVE_DOWN,
-    EVENT_MOVE_LEFT,
-    EVENT_MOVE_RIGHT 
-} game_event;
+typedef enum { EVENT_NONE, EVENT_QUIT, EVENT_MOVE_UP, EVENT_MOVE_DOWN, EVENT_TURN_LEFT, EVENT_TURN_RIGHT } game_event;
 
 void init_game(game_state *state);
 void handle_events(game_state *state, const game_event *events, int events_len);
