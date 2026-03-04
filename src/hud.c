@@ -7,7 +7,7 @@
 
 static status_code overlay_weapon(uint32_t frame_buffer[RENDER_HEIGHT][RENDER_WIDTH], const sprite *sprite,
                                   const player *player) {
-    const int bob_factor = 2;
+    const float bob_factor = 1.3;
 
     int bob_offset_y = player->bob_phase * bob_factor;
     int weapon_offset_y = RENDER_HEIGHT - sprite->height + bob_offset_y;
