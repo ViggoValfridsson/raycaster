@@ -154,6 +154,4 @@ void handle_events(game_state *state, const game_event *events, int events_len) 
     }
 
     bob_weapon(&state->player, is_moving);
-
-    printf("%d\n", state->player.bob_phase);
 }
