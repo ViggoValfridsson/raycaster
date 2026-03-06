@@ -6,8 +6,11 @@
 
 #define MAP_HEIGHT 24
 #define MAP_WIDTH 24
+#define MAX_ENEMY_STATE_FRAMES 4
 
 typedef enum { shotgun } weapon_type;
+typedef enum { demon } enemy_type;
+typedef enum { idle, attack, hurt, death } enemy_state;
 
 typedef struct {
     int damage;
@@ -16,6 +19,16 @@ typedef struct {
     int x_margin;
     weapon_type type;
 } weapon;
+
+typedef struct {
+    int health;
+    int damage;
+    enemy_type type;
+    enemy_state states;
+    int state_frame;
+    float pos_x;
+    float pos_y;
+} enemy;
 
 typedef struct {
     bool is_bob_incrementing;

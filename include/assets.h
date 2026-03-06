@@ -12,5 +12,8 @@ status_code init_assets();
 // Do not call this before init_assets
 // Never free sprite with call to libc free()
 status_code get_weapon_sprite(weapon_type type, sprite **sprite_out);
+// Do not call this before init_assets
+// Never free sprite with call to libc free()
+status_code get_enemy_sprite(enemy_type type, enemy_state state, int state_frame, sprite **sprite_out);
 
 #endif
