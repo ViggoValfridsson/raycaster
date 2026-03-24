@@ -2,7 +2,7 @@
 #include "common.h"
 #include "game.h"
 #include "hud.h"
-#include "raycast.h"
+#include "render.h"
 #include "sdl.h"
 #include <SDL2/SDL_timer.h>
 
@@ -35,6 +35,8 @@ int main(void) {
 
         handle_events(&state, game_events, events_len);
         raycast(&state.player, state.map, frame_buffer);
+        render_sprites(&state, frame_buffer);
+
         return_value = overlay_hud(&state.player,frame_buffer);
         if (return_value != STATUS_SUCCESS) 
             goto exit;

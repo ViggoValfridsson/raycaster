@@ -1,7 +1,6 @@
 #include "game.h"
 #include <SDL2/SDL_pixels.h>
 #include <math.h>
-#include <stdio.h>
 #include <string.h>
 
 #define ROT_SPEED 0.04f
