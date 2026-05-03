@@ -4,8 +4,7 @@ A lightweight proof-of-concept 2.5D raycaster written in C using SDL2, featuring
 
 ## Gameplay
 
-![Screenshot](./showcase/demo.webp)
-![Screenshot](./showcase/screenshot.png)
+![Demo Video](./showcase/demo.webp)
 
 ## Dependencies
 
