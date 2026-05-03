@@ -1,10 +1,11 @@
 # Simple 2.5D Raycaster
 
-A lightweight proof-of-concept 2.5D raycaster written in C using SDL2.
+A lightweight proof-of-concept 2.5D raycaster written in C using SDL2, featuring player movement and wall collision detection.
 
-## Gameplay Demo
+## Gameplay
 
-[Watch the demo](./showcase/demo.mp4)
+![Screenshot](./showcase/screenshot.png)
+<video src="./showcase/demo.mp4" controls width="800"></video>
 
 ## Dependencies
 
